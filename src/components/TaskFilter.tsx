@@ -19,7 +19,7 @@ export default function TaskFilter({
 }: TaskFilterProps) {
     return (
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-           
+          
             <div className="relative flex-1">
                 <Search className="absolute top-2.5 left-3 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -27,12 +27,12 @@ export default function TaskFilter({
                     placeholder="Search tasks by title..."
                     value={searchVal}
                     onChange={(e) => setSearchVal(e.target.value)}
-                    className="pl-9 h-9 border-input bg-card/45 placeholder:text-muted-foreground transition-colors focus-visible:ring-1 focus-visible:ring-ring"
+                    className="pl-9 h-9"
                 />
             </div>
 
-         
-            <div className="flex rounded-lg border border-border bg-card/40 p-1 space-x-1">
+             
+            <div className="flex rounded-lg border border-input p-1 space-x-1 bg-background">
                 {(["all", "active", "completed"] as const).map((filter) => (
                     <Button
                         key={filter}

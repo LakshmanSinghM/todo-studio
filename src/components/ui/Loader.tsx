@@ -6,7 +6,7 @@ interface LoaderProps {
     size?: number;
 }
 
-export default function Loader({ className = "text-indigo-500", size = 32 }: LoaderProps) {
+export default function Loader({ className = "text-primary", size = 32 }: LoaderProps) {
     return (
         <div className="flex items-center justify-center p-4">
             <Loader2 className={`animate-spin ${className}`} style={{ width: size, height: size }} />

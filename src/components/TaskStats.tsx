@@ -1,75 +1,46 @@
 import React from "react";
 import { TaskStats as TaskStatsType } from "@/hooks/useTasks";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import Loader from "@/components/ui/Loader";
+import { StatsCard } from "./StatsCard";
 
 interface TaskStatsProps {
     stats: TaskStatsType;
     statsLoading: boolean;
 }
 
-export default function TaskStats({ stats, statsLoading }: TaskStatsProps) {
-    const completionRate = stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0;
+export default function TaskStats({
+    stats,
+    statsLoading,
+}: TaskStatsProps) {
+    const completionRate =
+        stats.total > 0
+            ? Math.round((stats.completed / stats.total) * 100)
+            : 0;
 
     return (
-        <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <section className="grid grid-cols-3 gap-3 overflow-x-auto">
+            <StatsCard
+                title="Total Tasks"
+                value={stats.total}
+                loading={statsLoading}
+                textColor="text-foreground"
+                glowColor="bg-indigo-500/10"
+            />
 
-            <Card className="relative overflow-hidden border-border/60 bg-card/50 backdrop-blur-xl">
-                <div className="absolute top-0 right-0 h-24 w-24 translate-x-8 -translate-y-8 rounded-full bg-indigo-500/10 blur-2xl"></div>
-                <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">Total Tasks</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    {statsLoading ? (
-                        <Loader size={24} className="text-indigo-400" />
-                    ) : (
-                        <span className="text-3xl font-bold tracking-tight text-foreground">
-                            {stats.total}
-                        </span>
-                    )}
-                </CardContent>
-            </Card>
+            <StatsCard
+                title="Active Tasks"
+                value={stats.active}
+                loading={statsLoading}
+                textColor="text-amber-500"
+                glowColor="bg-amber-500/10"
+            />
 
-
-            <Card className="relative overflow-hidden border-border/60 bg-card/50 backdrop-blur-xl">
-                <div className="absolute top-0 right-0 h-24 w-24 translate-x-8 -translate-y-8 rounded-full bg-amber-500/10 blur-2xl"></div>
-                <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">Active Tasks</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    {statsLoading ? (
-                        <Loader size={24} className="text-amber-400" />
-                    ) : (
-                        <span className="text-3xl font-bold tracking-tight text-amber-500">
-                            {stats.active}
-                        </span>
-                    )}
-                </CardContent>
-            </Card>
-
-
-            <Card className="relative overflow-hidden border-border/60 bg-card/50 backdrop-blur-xl">
-                <div className="absolute top-0 right-0 h-24 w-24 translate-x-8 -translate-y-8 rounded-full bg-emerald-500/10 blur-2xl"></div>
-                <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">Completed Tasks</CardTitle>
-                </CardHeader>
-                <CardContent className="flex items-baseline gap-2">
-                    {statsLoading ? (
-                        <Loader size={24} className="text-emerald-400" />
-                    ) : (
-                        <>
-                            <span className="text-3xl font-bold tracking-tight text-emerald-500">
-                                {stats.completed}
-                            </span>
-                            {stats.total > 0 && (
-                                <span className="text-xs font-semibold text-emerald-500/80">
-                                    {completionRate}% rate
-                                </span>
-                            )}
-                        </>
-                    )}
-                </CardContent>
-            </Card>
+            <StatsCard
+                title="Completed Tasks"
+                value={stats.completed}
+                loading={statsLoading}
+                textColor="text-emerald-500"
+                glowColor="bg-emerald-500/10"
+            />
         </section>
     );
 }
