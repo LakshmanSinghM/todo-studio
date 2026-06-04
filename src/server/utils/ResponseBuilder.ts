@@ -22,22 +22,13 @@ export class ResponseBuilder {
     static buildApiOkResponse<T>(response: ApiResponse<T>) {
         return NextResponse.json(response, { status: response.success ? 200 : 400 });
     }
+
+    static buildApiNoContentResponse() {
+        return new NextResponse(null, { status: 204 });
+    }
     // --- OK (501/) ---
     static buildInternalServerErrorResponse<T>(response: ApiResponse<T>) {
         return NextResponse.json(response, { status: response.success ? 200 : 501 });
-    }
-    //  unauthorized response
-    static buildUnauthorizedResponse<T>(response: ApiResponse<T>) {
-        return NextResponse.json(response, { status: 401 });
-    }
-
-    //  too many requests response
-    static buildTooManyRequestResponse<T>(response: ApiResponse<T>) {
-        return NextResponse.json(response, { status: response.success ? 200 : 429 });
-    }
-
-    static buildAlreadyExistResponse<T>(response: ApiResponse<T>) {
-        return NextResponse.json(response, { status: 409 });
     }
 
 
