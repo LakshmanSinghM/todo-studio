@@ -11,10 +11,7 @@ export default function TaskStats({
     stats,
     statsLoading,
 }: TaskStatsProps) {
-    const completionRate =
-        stats.total > 0
-            ? Math.round((stats.completed / stats.total) * 100)
-            : 0;
+    
 
     return (
         <section className="grid grid-cols-3 gap-3 overflow-x-auto">
@@ -27,7 +24,7 @@ export default function TaskStats({
             />
 
             <StatsCard
-                title="Active Tasks"
+                title="Pending Tasks"
                 value={stats.active}
                 loading={statsLoading}
                 textColor="text-amber-500"

@@ -17,9 +17,16 @@ export default function TaskFilter({
     statusFilter,
     setStatusFilter,
 }: TaskFilterProps) {
+
+    const filters = [
+        { value: "all", label: "All" },
+        { value: "active", label: "Pending" },
+        { value: "completed", label: "Completed" },
+    ] as const;
+
     return (
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          
+            {/* Search Bar */}
             <div className="relative flex-1">
                 <Search className="absolute top-2.5 left-3 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -31,21 +38,17 @@ export default function TaskFilter({
                 />
             </div>
 
-             
+            {/* Filter Tabs */}
             <div className="flex rounded-lg border border-input p-1 space-x-1 bg-background">
-                {(["all", "active", "completed"] as const).map((filter) => (
+                {filters.map((filter) => (
                     <Button
-                        key={filter}
-                        variant={statusFilter === filter ? "default" : "ghost"}
+                        key={filter.value}
+                        variant={statusFilter === filter.value ? "default" : "ghost"}
                         size="sm"
-                        onClick={() => setStatusFilter(filter)}
-                        className={`text-xs font-semibold uppercase tracking-wider h-7.5 px-3.5 rounded-md ${
-                            statusFilter === filter
-                                ? "bg-primary text-primary-foreground shadow"
-                                : "text-muted-foreground hover:text-foreground"
-                        }`}
+                        onClick={() => setStatusFilter(filter.value as StatusFilter)}
+                        className="text-xs font-semibold uppercase tracking-wider h-7.5 px-3.5 rounded-md"
                     >
-                        {filter}
+                        {filter.label}
                     </Button>
                 ))}
             </div>
