@@ -85,7 +85,6 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground p-4 sm:p-6 md:p-8">
       <div className="mx-auto max-w-4xl space-y-8">
-
         {/* Header */}
         <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex w-full items-center justify-between">

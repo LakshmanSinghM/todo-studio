@@ -16,7 +16,7 @@ export default function TaskStats({
     return (
         <section className="grid grid-cols-3 gap-3 overflow-x-auto">
             <StatsCard
-                title="Total Tasks"
+                title="Total"
                 value={stats.total}
                 loading={statsLoading}
                 textColor="text-foreground"
@@ -24,7 +24,7 @@ export default function TaskStats({
             />
 
             <StatsCard
-                title="Pending Tasks"
+                title="Pending"
                 value={stats.active}
                 loading={statsLoading}
                 textColor="text-amber-500"
@@ -32,7 +32,7 @@ export default function TaskStats({
             />
 
             <StatsCard
-                title="Completed Tasks"
+                title="Completed"
                 value={stats.completed}
                 loading={statsLoading}
                 textColor="text-emerald-500"
