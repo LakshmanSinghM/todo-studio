@@ -27,6 +27,7 @@ export default function Home() {
     toggleTask,
     editTask,
     deleteTask,
+    reorderTasks,
   } = useTasks();
 
   const [isMounted, setIsMounted] = useState(false);
@@ -35,6 +36,9 @@ export default function Home() {
   // Form modal state
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | undefined>(undefined);
+
+  // Drag and drop state
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   // prevent Next.js hydration mismatch
   useEffect(() => {
@@ -48,6 +52,28 @@ export default function Home() {
     }, 300);
     return () => clearTimeout(timer);
   }, [searchVal, setSearchQuery]);
+
+  const handleDragStart = (e: React.DragEvent, id: string, index: number) => {
+    e.dataTransfer.setData("text/plain", id);
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+  };
+
+  const handleDrop = async (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    const id = e.dataTransfer.getData("text/plain");
+    if (draggedIndex !== null && draggedIndex !== index) {
+      await reorderTasks(id, index);
+    }
+    setDraggedIndex(null);
+  };
 
   const handleFormSubmit = async (data: { title: string; description?: string; dueDate?: string }) => {
     if (selectedTask) {
@@ -74,6 +100,8 @@ export default function Home() {
     }
   };
 
+  const dragDisabled = !!searchQuery || statusFilter !== "all";
+
   if (!isMounted) {
     return (
       <div className="flex h-screen items-center justify-center bg-background text-foreground">
@@ -85,7 +113,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground p-4 sm:p-6 md:p-8">
       <div className="mx-auto max-w-4xl space-y-8">
-        {/* Header */}
+       
         <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex w-full items-center justify-between">
          
@@ -105,10 +133,10 @@ export default function Home() {
           </div>
         </header>
 
-        {/* Stats Dashboard */}
+       
         <TaskStats stats={stats} statsLoading={statsLoading} />
 
-        {/* Search & Filter Controls */}
+   
         <TaskFilter
           searchVal={searchVal}
           setSearchVal={setSearchVal}
@@ -116,7 +144,7 @@ export default function Home() {
           setStatusFilter={setStatusFilter}
         />
 
-        {/* Errors */}
+ 
         {error && (
           <div className="flex items-center gap-3 rounded-xl border border-destructive bg-destructive/10 p-4 text-destructive backdrop-blur-md">
             <AlertTriangle className="h-5 w-5 flex-shrink-0" />
@@ -124,7 +152,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* Tasks Container */}
+ 
         <div className="space-y-3">
           {loading && tasks.length === 0 ? (
             <Loader size={32} />
@@ -142,14 +170,17 @@ export default function Home() {
                 onEditDisabled={false}
                 onDeleteClick={handleDeleteClick}
                 onDeleteDisabled={false}
-                dragDisabled={true}
+                dragDisabled={dragDisabled}
+                onDragStart={handleDragStart}
+                onDragOver={handleDragOver}
+                onDragEnd={handleDragEnd}
+                onDrop={handleDrop}
               />
             ))
           )}
         </div>
       </div>
 
-      {/* Reusable Form Dialog (for Create and Edit) */}
       <TaskFormDialog
         open={isFormOpen}
         onOpenChange={setIsFormOpen}

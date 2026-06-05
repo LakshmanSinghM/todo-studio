@@ -1,10 +1,10 @@
-import React from "react";
-import { Task } from "@/types/todoTypes";
-import { Card } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, AlertTriangle, GripVertical, Edit3, Trash2 } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Task } from "@/types/todoTypes";
+import { AlertTriangle, Calendar, Edit3, GripVertical, Trash2 } from "lucide-react";
+import React, { useState, useRef } from "react";
 
 interface TaskCardProps {
     task: Task;
@@ -19,6 +19,7 @@ interface TaskCardProps {
     onDragStart?: (e: React.DragEvent, id: string, index: number) => void;
     onDragOver?: (e: React.DragEvent, index: number) => void;
     onDragEnd?: (e: React.DragEvent) => void;
+    onDrop?: (e: React.DragEvent, index: number) => void;
 }
 
 export default function TaskCard({
@@ -34,7 +35,11 @@ export default function TaskCard({
     onDragStart,
     onDragOver,
     onDragEnd,
+    onDrop,
 }: TaskCardProps) {
+    const [isDragOver, setIsDragOver] = useState(false);
+    const dragCounter = useRef(0);
+
     const checkIfOverdue = (dueDateStr?: string, completed?: boolean) => {
         if (!dueDateStr || completed) return false;
         const today = new Date();
@@ -54,6 +59,27 @@ export default function TaskCard({
         });
     };
 
+    const handleDragEnter = (e: React.DragEvent) => {
+        e.preventDefault();
+        dragCounter.current++;
+        if (dragCounter.current > 0) {
+            setIsDragOver(true);
+        }
+    };
+
+    const handleDragLeave = (e: React.DragEvent) => {
+        dragCounter.current--;
+        if (dragCounter.current === 0) {
+            setIsDragOver(false);
+        }
+    };
+
+    const handleDrop = (e: React.DragEvent) => {
+        dragCounter.current = 0;
+        setIsDragOver(false);
+        onDrop?.(e, index);
+    };
+
     const isOverdue = checkIfOverdue(task.dueDate, task.completed);
 
     return (
@@ -61,14 +87,23 @@ export default function TaskCard({
             draggable={!dragDisabled}
             onDragStart={(e) => onDragStart?.(e, task.id, index)}
             onDragOver={(e) => onDragOver?.(e, index)}
-            onDragEnd={onDragEnd}
-            className={`group relative flex items-center justify-between gap-4 p-4 transition-all duration-250 ${
+            onDragEnd={(e) => {
+                dragCounter.current = 0;
+                setIsDragOver(false);
+                onDragEnd?.(e);
+            }}
+            onDragEnter={dragDisabled ? undefined : handleDragEnter}
+            onDragLeave={dragDisabled ? undefined : handleDragLeave}
+            onDrop={dragDisabled ? undefined : handleDrop}
+            className={`group relative flex items-center justify-between gap-4 p-4 transition-all duration-200 ${
                 task.completed
                     ? "opacity-60 bg-muted/40"
                     : isOverdue
                     ? "border-destructive bg-destructive/10"
                     : "bg-card hover:bg-muted/30"
-            } ${!dragDisabled ? "cursor-grab active:cursor-grabbing" : ""}`}
+            } ${!dragDisabled ? "cursor-grab active:cursor-grabbing" : ""} ${
+                isDragOver ? "border-primary ring-2 ring-primary/50 bg-accent/40 scale-[1.01]" : ""
+            }`}
         >
             <div className="flex items-start gap-3 min-w-0">
                 <div className="mt-0.5">
@@ -80,7 +115,7 @@ export default function TaskCard({
                 </div>
 
                 {!dragDisabled && (
-                    <div className="mt-1 flex-shrink-0 text-muted-foreground md:block hidden">
+                    <div className="mt-1 flex-shrink-0 text-muted-foreground block">
                         <GripVertical className="h-4 w-4" />
                     </div>
                 )}
@@ -127,7 +162,7 @@ export default function TaskCard({
                 </div>
             </div>
 
-            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex items-center gap-1 transition-opacity">
                 <Button
                     disabled={onEditDisabled}
                     variant="ghost"
