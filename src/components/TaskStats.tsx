@@ -14,7 +14,7 @@ export default function TaskStats({
     
 
     return (
-        <section className="grid grid-cols-3 gap-3 overflow-x-auto">
+        <section className="grid grid-cols-3 gap-2 py-1 overflow-x-auto">
             <StatsCard
                 title="Total"
                 value={stats.total}

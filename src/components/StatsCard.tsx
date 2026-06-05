@@ -18,7 +18,7 @@ export function StatsCard({
     glowColor,
 }: StatsCardProps) {
     return (
-        <Card className="relative overflow-hidden border-border/60 bg-card/50 m-2! p-0! backdrop-blur-xl">
+        <Card className="relative overflow-hidden border-border/60 bg-card/50  backdrop-blur-xl">
             <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                     {title}
